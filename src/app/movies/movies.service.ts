@@ -12,7 +12,7 @@ export class MoviesService {
 
     constructor(private readonly httpService: HttpService) { }
     
-    async getMovies(page: number, sort_by: string){
+    async getTenMovies(page: number, sort_by: string){
         const token = `Bearer ${this.TOKEN}`;
         this.httpService.axiosRef.defaults.headers.common['Authorization'] = token;
 
@@ -21,17 +21,18 @@ export class MoviesService {
             
             const response = await lastValueFrom(this.httpService.get(url));
 
-            response.data.results.sort((a, b) => {
+            const dados = response.data.results.sort((a, b) => {
                 if (a.popularity > b.popularity) {
-                    return -1;
+                  return -1;
                 }
                 if (a.popularity < b.popularity) {
-                    return 1;
+                  return 1;
                 }
                 return 0;
-            });
-            
-            return response.data.results;
+              });
+          
+              // Retorna apenas os 10 primeiros dados
+              return dados.slice(0, 10);
         } catch (error) {            
             return error;
         }
@@ -39,7 +40,7 @@ export class MoviesService {
 
     async getMoviesFromAPI(page: number, sort_by: string): Promise<MovieDTO[]>{
 
-        const data = await this.getMovies(page, sort_by);
+        const data = await this.getTenMovies(page, sort_by);
         const movieDto = new Array<MovieDTO>();
 
             data.forEach(element => {
