@@ -17,4 +17,7 @@ export class MovieDTO {
 
     @IsNumber()
     popularity: number;
+
+    @IsString( {message: 'Image deve ser uma string'} )
+    poster_path: string;
 }

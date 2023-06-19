@@ -50,7 +50,8 @@ export class MoviesService {
                     overview: element.overview,
                     release_date: element.release_date,
                     vote_average: element.vote_average,
-                    popularity: element.popularity
+                    popularity: element.popularity,
+                    poster_path: element.poster_path,
                 });                
             });            
 
