@@ -5,20 +5,26 @@ import { MovieDTO } from './dto/movie.dto';
 
 @Injectable()
 export class MoviesService {
-    private readonly API_URL = process.env.URL;
-    private readonly INCLUDE_ADULT = process.env.INCLUDE_ADULT;
-    private readonly INCLUDE_VIDEO = process.env.INCLUDE_VIDEO;
+    private readonly NOW_PLAYING = process.env.NOW_PLAYING;
+    private readonly POPULAR = process.env.POPULAR;
     private readonly TOKEN = process.env.TOKEN;
+    private readonly NOWPLAYING = 'now_playing';
+    private readonly POPULARMOVIES = 'popular';
 
     constructor(private readonly httpService: HttpService) { }
     
-    async getTenMovies(page: number, sort_by: string){
+    async getTenMovies(page: number, api: string){
         const token = `Bearer ${this.TOKEN}`;
         this.httpService.axiosRef.defaults.headers.common['Authorization'] = token;
 
-        try{        
-            const url = `${this.API_URL}?include_adult=${this.INCLUDE_ADULT}&include_video=${this.INCLUDE_VIDEO}&language=pt-BR&page=${page}&sort_by=${sort_by}`;
-            
+        try{     
+            let url = '';  
+            if(api === this.NOWPLAYING){
+                url = `${this.NOW_PLAYING}?language=pt-BR&page=${page}`
+            }else if(api === this.POPULARMOVIES){
+                url = `${this.POPULAR}?page=${page}`
+            }
+
             const response = await lastValueFrom(this.httpService.get(url));
 
             const dados = response.data.results.sort((a, b) => {
@@ -38,12 +44,19 @@ export class MoviesService {
         }
     }
 
-    async getMoviesFromAPI(page: number, sort_by: string): Promise<MovieDTO[]>{
+    async getMoviesFromAPI(page: number, api: string): Promise<MovieDTO[]>{
 
-        const data = await this.getTenMovies(page, sort_by);
+        let data = [];
+        if(api === this.NOWPLAYING){
+            data = await this.getTenMovies(page, this.NOWPLAYING);
+        }else if (api === this.POPULARMOVIES){
+            data = await this.getTenMovies(page, this.POPULARMOVIES);
+        }
+        
         const movieDto = new Array<MovieDTO>();
 
             data.forEach(element => {
+                console.log(element);
                 movieDto.push({                   
                     id: element.id,
                     title: element.title,
@@ -57,5 +70,4 @@ export class MoviesService {
 
         return movieDto;
     }
-
 }

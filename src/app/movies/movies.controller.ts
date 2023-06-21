@@ -5,14 +5,22 @@ import { MovieDTO } from './dto/movie.dto';
 @Controller('movies')
 export class MoviesController {
 
+    private readonly NOWPLAYING = 'now_playing';
+    private readonly POPULARMOVIES = 'popular';
+
     constructor(private readonly moviesService: MoviesService) { }
 
-    @Get(':page/:sort_by')
-    async getTenMovies(@Param('page') page: number, @Param('sort_by') sort_by: string): Promise<MovieDTO[]> {
-        const data = await this.moviesService.getMoviesFromAPI(page, sort_by);
+    @Get('now-playing/:page')
+    async getNowPlaying(@Param('page') page: number): Promise<MovieDTO[]> {
+        const data = await this.moviesService.getMoviesFromAPI(page, this.NOWPLAYING);
 
         return data;
     }
 
+    @Get('popular/:page')
+    async getPoupular(@Param('page') page: number): Promise<MovieDTO[]> {
+        const data = await this.moviesService.getMoviesFromAPI(page, this.POPULARMOVIES);
 
+        return data;
+    }
 }
