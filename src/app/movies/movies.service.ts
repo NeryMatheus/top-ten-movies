@@ -56,7 +56,6 @@ export class MoviesService {
         const movieDto = new Array<MovieDTO>();
 
             data.forEach(element => {
-                console.log(element);
                 movieDto.push({                   
                     id: element.id,
                     title: element.title,
