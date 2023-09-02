@@ -22,7 +22,7 @@ export class MoviesService {
             if(api === this.NOWPLAYING){
                 url = `${this.NOW_PLAYING}?language=pt-BR&page=${page}`
             }else if(api === this.POPULARMOVIES){
-                url = `${this.POPULAR}?page=${page}`
+                url = `${this.POPULAR}?language=pt-BR&page=${page}`
             }
 
             const response = await lastValueFrom(this.httpService.get(url));
